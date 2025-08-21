@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
-import { getWeather } from "./weather";
+import { getLatLon, getWeatherByLatLon } from "./weather";
 import SearchBar from "./components/SearchBar";
 import WeatherDetails from "./components/WeatherDetails";
 
@@ -14,19 +14,16 @@ function App() {
     setError("");
     setWeather(null);
     if (!city) {
-      setError("Please enter a city name.");
+      setError("Please enter a location.");
       return;
     }
     setLoading(true);
     try {
-      const data = await getWeather(city);
-      if (data) {
-        setWeather(data);
-      } else {
-        setError("Unable to fetch weather data.");
-      }
+      const { lat, lon } = await getLatLon(city);
+      const data = await getWeatherByLatLon(lat, lon);
+      setWeather(data);
     } catch (err) {
-      setError("Network error. Please try again later.");
+      setError("Unable to fetch weather for that location.");
     } finally {
       setLoading(false);
     }
