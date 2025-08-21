@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
 import { getWeather } from "./weather";
+import SearchBar from "./components/SearchBar";
+import WeatherDetails from "./components/WeatherDetails";
 
 function App() {
   const [city, setCity] = useState("Atlanta, US");
@@ -39,33 +41,22 @@ function App() {
     <div className="app">
       <img src={process.env.PUBLIC_URL + '/logo192.png'} alt="Weather Logo" style={{ width: 80, marginBottom: 10 }} />
       <h1>React Weather App</h1>
-      <div style={{ marginBottom: 20 }}>
-        <input
-          type="text"
-          placeholder="Enter city"
-          value={city}
-          onChange={(e) => setCity(e.target.value)}
-          onKeyDown={(e) => { if (e.key === 'Enter') fetchWeather(); }}
-          disabled={loading}
-        />
-        <button onClick={fetchWeather} disabled={loading}>
-          {loading ? "Loading..." : "Get Weather"}
-        </button>
-      </div>
+      <SearchBar
+        value={city}
+        onChange={e => setCity(e.target.value)}
+        onSearch={fetchWeather}
+        loading={loading}
+      />
       {error && <div className="error" style={{ color: 'red', marginTop: 10 }}>{error}</div>}
       {weather && !error && (
         <>
           <h2 style={{ marginTop: 20 }}>{weather.name}{weather.sys && weather.sys.country ? `, ${weather.sys.country}` : ''}</h2>
-          <div className="weather-container">
-            <div className="weather-main">
-              <div className="weather-temp">{Math.round(weather.main.temp)}°C</div>
-              <div className="weather-desc">{weather.weather && weather.weather[0] && weather.weather[0].description}</div>
-            </div>
-            <div className="weather-details">
-              <div>Humidity: {weather.main.humidity}%</div>
-              <div>Wind: {weather.wind && weather.wind.speed} m/s</div>
-            </div>
-          </div>
+          <WeatherDetails
+            temp={weather.main.temp}
+            description={weather.weather && weather.weather[0] && weather.weather[0].description}
+            humidity={weather.main.humidity}
+            wind={weather.wind && weather.wind.speed}
+          />
         </>
       )}
     </div>

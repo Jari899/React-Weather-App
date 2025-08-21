@@ -1,4 +1,4 @@
-const API_KEY = "46dc61ce87c0dba01864591b53da98c1";
+const API_KEY = process.env.REACT_APP_WEATHER_API_KEY;
 
 export async function getWeather(query) {
   try {
